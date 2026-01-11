@@ -27,6 +27,8 @@ public class ExpenseEntity {
     private LocalDate date;
     private BigDecimal amount;
 
+    private LocalDateTime addedDate;
+
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;

@@ -38,12 +38,12 @@ public class ProfileService {
 
         // encode password once before saving
         newProfile.setPassword(passwordEncoder.encode(newProfile.getPassword()));
+        newProfile.setActivationToken(UUID.randomUUID().toString());
         newProfile = profileRepository.save(newProfile);
 
         // sending email for account activation using google mail service
-        newProfile.setActivationToken(UUID.randomUUID().toString());
         String activationLink =
-                "localhost:8086/api/v1.0/activate?token=" + newProfile.getActivationToken();
+                "https://localhost:8086/api/v1.0/activate?token=" + newProfile.getActivationToken();
         String body =
                 "Hello 👋,\n\n" +
                         "Thank you for creating an account with us!\n\n" +
@@ -58,6 +58,7 @@ public class ProfileService {
                         "Best regards,\n" +
                         "Protik The DEV\n" +
                         "Money Manager";
+
         emailService.sendMail(
                 newProfile.getEmail(),
                 "Account Activation Request",

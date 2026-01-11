@@ -19,7 +19,7 @@ public class RecentTransactionDTO {
     private String icon;
     private String name;
     private BigDecimal amount;
-    private LocalDate date;
+    private LocalDateTime addedDate;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String type;

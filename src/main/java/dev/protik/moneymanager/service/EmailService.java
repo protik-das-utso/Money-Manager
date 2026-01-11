@@ -10,10 +10,8 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class EmailService {
-    @Autowired
     private final JavaMailSender mailSender;
 
-    //@Value("spring.mail.properties.mail.smtp.from=${BREVEO_FROM_EMAIL}")
     private String fromEmail = "protikdas018830@gmail.com";
 
     public void sendMail(String to, String subject, String body) {

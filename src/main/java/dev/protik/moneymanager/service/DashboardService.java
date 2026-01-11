@@ -39,7 +39,7 @@ public class DashboardService {
                                 .icon(income.getIcon())
                                 .name(income.getName())
                                 .amount(income.getAmount())
-                                .date(income.getDate())
+                                .addedDate(income.getAddedDate())
                                 .type("income")
                                 .build()),
                 latestExpenses.stream().map(expense ->
@@ -49,11 +49,11 @@ public class DashboardService {
                                 .icon(expense.getIcon())
                                 .name(expense.getName())
                                 .amount(expense.getAmount())
-                                .date(expense.getDate())
+                                .addedDate(expense.getAddedDate())
                                 .type("expense")
                                 .build()))
                 .sorted((a, b) -> {
-                    int cmp = b.getDate().compareTo(a.getDate());
+                    int cmp = b.getAddedDate().compareTo(a.getAddedDate());
                     if (cmp == 0 && a.getCreatedAt() != null) {
                         return  b.getAmount().compareTo(a.getAmount());
                     }
