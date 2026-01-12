@@ -24,7 +24,6 @@ public class IncomeEntity {
     private Long id;
     private String name;
     private String icon;
-    private LocalDate date;
     private BigDecimal amount;
 
     private LocalDateTime addedDate;
@@ -46,8 +45,8 @@ public class IncomeEntity {
 
     @PrePersist
     protected void prePersist() {
-        if(this.date == null) {
-            this.date = LocalDate.now();
+        if(this.addedDate == null) {
+            this.addedDate = LocalDateTime.now();
         }
     }
 }

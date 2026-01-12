@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @RestController
@@ -26,18 +28,24 @@ public class FilterController {
 
     @PostMapping
     public ResponseEntity<?> filterTransactions(@RequestBody FilterDTO filter) {
-        LocalDate startDate = filter.getStartDate() != null ? filter.getStartDate() : LocalDate.MIN;
-        LocalDate endDate = filter.getEndDate() != null ? filter.getEndDate() : LocalDate.now();
+        LocalDateTime startDateTime = filter.getStartDate() != null
+                ? filter.getStartDate().atStartOfDay()
+                : LocalDateTime.MIN;
+
+        LocalDateTime endDateTime = filter.getEndDate() != null
+                ? filter.getEndDate().atTime(LocalTime.MAX)
+                : LocalDateTime.now();
+
         String keyword = filter.getKeyword() != null ? filter.getKeyword() : "";
-        String sortField = filter.getSortField() != null ? filter.getSortField() : "date";
+        String sortField = filter.getSortField() != null ? filter.getSortField() : "addedDate";
         Sort.Direction direction = "desc".equalsIgnoreCase(filter.getSortField()) ? Sort.Direction.DESC : Sort.Direction.ASC;
         Sort sort = Sort.by(direction, sortField);
 
         if("income".equalsIgnoreCase(filter.getType())){
-            List<IncomeDTO> incomes =  incomeService.filterIncomes(startDate, endDate, keyword, sort);
+            List<IncomeDTO> incomes =  incomeService.filterIncomes(startDateTime, endDateTime, keyword, sort);
             return ResponseEntity.ok(incomes);
         } else if ("expense".equalsIgnoreCase(filter.getType())){
-            List<ExpenseDTO> expenses =  expenseService.filterExpenses(startDate, endDate, keyword, sort);
+            List<ExpenseDTO> expenses =  expenseService.filterExpenses(startDateTime, endDateTime, keyword, sort);
             return ResponseEntity.ok(expenses);
         } else {
             return ResponseEntity.badRequest().body("Invalid Type. Must be 'income' or 'expense'");

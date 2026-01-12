@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -31,31 +33,66 @@ public class ExpenseService {
         return toDTO(expenseEntity);
     }
 
-    // Retrieves all expenses for the current month: based on the startDate and endDate
-    public List<ExpenseDTO> getExpensesForCurrentMonthForCurrentUser() {
-        ProfileEntity profile = profileService.getCurrentProfile();
-        LocalDate now = LocalDate.now();
-        LocalDate startDate = now.withDayOfMonth(1);
-        LocalDate endDate = now.withDayOfMonth(now.lengthOfMonth());
-        List<ExpenseEntity> expenses = expenseRepository.findByProfileIdAndDateBetween(profile.getId(), startDate, endDate);
-        return expenses.stream().map(this::toDTO).toList();
-    }
-
     // delete expense by id for current user
     public void deleteExpense(Long expenseId) {
         ProfileEntity profile = profileService.getCurrentProfile();
         ExpenseEntity existingExpense = expenseRepository.findById(expenseId)
                 .orElseThrow(() -> new RuntimeException("Expense not found with id: " + expenseId));
-        if(!existingExpense.getProfile().getId().equals(profile.getId())) {
+        if (!existingExpense.getProfile().getId().equals(profile.getId())) {
             throw new RuntimeException("Unauthorized: Expense not found or accessible");
         }
         expenseRepository.delete(existingExpense);
     }
 
+    // Retrieves all expenses for the current month: based on the startDate and endDate
+    public List<ExpenseDTO> getExpensesForCurrentMonthForCurrentUser() {
+        ProfileEntity profile = profileService.getCurrentProfile();
+        LocalDate now = LocalDate.now();
+        LocalDateTime startDate = now.withDayOfMonth(1).atStartOfDay();
+        LocalDateTime endDate   = now.withDayOfMonth(now.lengthOfMonth()).atTime(LocalTime.MAX);
+
+        List<ExpenseEntity> expenses = expenseRepository.findByProfileIdAndAddedDateBetween(profile.getId(), startDate, endDate);
+        return expenses.stream().map(this::toDTO).toList();
+    }
+
+
     // Get latest 5 expenses for current user
-    public List<ExpenseDTO> getLatest5ExpensesForCurrentUser(){
-        ProfileEntity profile =  profileService.getCurrentProfile();
-        List<ExpenseEntity> list =  expenseRepository.findTop5ByProfileIdOrderByDateDesc(profile.getId());
+    public List<ExpenseDTO> getLatest5ExpensesForCurrentUser() {
+        ProfileEntity profile = profileService.getCurrentProfile();
+        List<ExpenseEntity> list = expenseRepository.findTop5ByProfileIdOrderByAddedDateDesc(profile.getId());
+        return list.stream().map(this::toDTO).toList();
+    }
+
+
+    // Get latest Expenses for current user (Today)
+    public List<ExpenseDTO> getTodaysExpenseForCurrentUser() {
+        ProfileEntity profile = profileService.getCurrentProfile();
+        LocalDate today = LocalDate.now();
+        LocalDateTime todayStart = today.atStartOfDay();
+        LocalDateTime todayEnd = today.atTime(LocalTime.MAX);
+
+        List<ExpenseEntity> list = expenseRepository.findByProfileIdAndAddedDateBetween(profile.getId(), todayStart, todayEnd);
+        return list.stream().map(this::toDTO).toList();
+    }
+
+    // Get latest Expenses for current user (yesterday)
+    public List<ExpenseDTO> getYesterdaysExpenseForCurrentUser() {
+        ProfileEntity profile = profileService.getCurrentProfile();
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+
+        LocalDateTime yesterdayStart = yesterday.atStartOfDay();
+        LocalDateTime yesterdayEnd   = yesterday.atTime(LocalTime.MAX);
+
+        List<ExpenseEntity> list = expenseRepository.findByProfileIdAndAddedDateBetween(profile.getId(), yesterdayStart, yesterdayEnd);
+        return list.stream().map(this::toDTO).toList();
+    }
+
+    // Get latest Expenses for current user (Last 7 days)
+    public List<ExpenseDTO> getLast7DaysExpenseForCurrentUser() {
+        ProfileEntity profile = profileService.getCurrentProfile();
+        LocalDateTime today = LocalDateTime.now().toLocalDate().atStartOfDay();
+        LocalDateTime sevenThDay = LocalDateTime.now().toLocalDate().minusDays(7).atStartOfDay();
+        List<ExpenseEntity> list = expenseRepository.findByProfileIdAndAddedDateBetween(profile.getId(), today, sevenThDay);
         return list.stream().map(this::toDTO).toList();
     }
 
@@ -67,9 +104,9 @@ public class ExpenseService {
     }
 
     // filter expenses
-    public List<ExpenseDTO> filterExpenses(LocalDate startDate, LocalDate endDate, String keyword, Sort sort) {
+    public List<ExpenseDTO> filterExpenses(LocalDateTime startDate, LocalDateTime endDate, String keyword, Sort sort) {
         ProfileEntity profile = profileService.getCurrentProfile();
-        List<ExpenseEntity> list = expenseRepository.findByProfileIdAndDateBetweenAndNameContainingIgnoreCase(profile.getId(), startDate, endDate, keyword, sort);
+        List<ExpenseEntity> list = expenseRepository.findByProfileIdAndAddedDateBetweenAndNameContainingIgnoreCase(profile.getId(), startDate, endDate, keyword, sort);
         return list.stream().map(this::toDTO).toList();
     }
 
@@ -85,6 +122,7 @@ public class ExpenseService {
                 .profile(profile)
                 .build();
     }
+
     private ExpenseDTO toDTO(ExpenseEntity entity) {
         return ExpenseDTO.builder()
                 .id(entity.getId())

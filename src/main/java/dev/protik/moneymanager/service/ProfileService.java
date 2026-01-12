@@ -45,19 +45,64 @@ public class ProfileService {
         String activationLink =
                 "https://localhost:8086/api/v1.0/activate?token=" + newProfile.getActivationToken();
         String body =
-                "Hello 👋,\n\n" +
-                        "Thank you for creating an account with us!\n\n" +
-                        "To complete your registration, please activate your account by clicking the link below:\n\n" +
-                        "🔗 Activate Your Account\n" +
-                        activationLink + "\n\n" +
-                        "⏰ Important:\n" +
-                        "This activation link is valid for a limited time. If you do not activate your account within this period, you may need to request a new link.\n\n" +
-                        "🔒 Security Notice:\n" +
-                        "If you did not create this account, please ignore this email. No action is required.\n\n" +
-                        "If you face any issues or have questions, feel free to reply to this email — we’re happy to help 😊\n\n" +
-                        "Best regards,\n" +
-                        "Protik The DEV\n" +
-                        "Money Manager";
+                "<div style='background:#f4f6f8; padding:5px; font-family:Arial, Helvetica, sans-serif;'>" +
+
+                        "<div style='max-width:600px; margin:0 auto; background:#ffffff; padding:30px; " +
+                        "border-radius:10px; box-shadow:0 6px 15px rgba(0,0,0,0.08);'>" +
+
+                        "<h2 style='color:#2c3e50; margin-top:0;'>Hello, " + newProfile.getFullName() + " 👋</h2>"
+                        +
+
+                        "<p style='color:#555; font-size:15px; line-height:1.7;'>" +
+                        "Thank you for creating an account with us! To complete your registration, " +
+                        "please activate your account by clicking the button below." +
+                        "</p>" +
+
+                        "<div style='text-align:center; margin:35px 0;'>" +
+                        "<a href='" + activationLink + "' " +
+                        "style='background:#27ae60; color:#ffffff; text-decoration:none; " +
+                        "padding:14px 30px; border-radius:8px; font-size:16px; font-weight:bold; " +
+                        "display:inline-block;'>" +
+                        "Activate Your Account" +
+                        "</a>" +
+                        "</div>" +
+
+                        "<p style='color:#777; font-size:14px; line-height:1.6;'>" +
+                        "If the button above does not work, copy and paste the following link into your browser:" +
+                        "</p>" +
+
+                        "<p style='word-break:break-all; background:#f9f9f9; padding:12px; " +
+                        "border-radius:6px; font-size:13px; color:#2980b9;'>" +
+                        activationLink +
+                        "</p>" +
+
+                        "<hr style='border:none; border-top:1px solid #eaeaea; margin:30px 0;'>" +
+
+                        "<p style='color:#555; font-size:14px; line-height:1.6;'>" +
+                        "<strong>⏰ Important:</strong><br>" +
+                        "This activation link is valid for a limited time. If it expires, you may need to request a new one." +
+                        "</p>" +
+
+                        "<p style='color:#555; font-size:14px; line-height:1.6;'>" +
+                        "<strong>🔒 Security Notice:</strong><br>" +
+                        "If you did not create this account, please ignore this email. No action is required." +
+                        "</p>" +
+
+                        "<p style='color:#555; font-size:14px; line-height:1.6;'>" +
+                        "If you face any issues or have questions, feel free to reply to this email — " +
+                        "we’re happy to help 😊" +
+                        "</p>" +
+
+                        "<hr style='border:none; border-top:1px solid #eaeaea; margin:30px 0;'>" +
+
+                        "<p style='color:#999; font-size:12px; text-align:center;'>" +
+                        "Best regards,<br>" +
+                        "<strong>Protik The DEV</strong><br>" +
+                        "Money Manager" +
+                        "</p>" +
+
+                        "</div>" +
+                        "</div>";
 
         emailService.sendMail(
                 newProfile.getEmail(),
