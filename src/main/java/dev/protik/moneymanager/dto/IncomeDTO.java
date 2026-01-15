@@ -15,12 +15,14 @@ import java.time.LocalDateTime;
 @Builder
 public class IncomeDTO {
     private Long id;
-    private String name;
     private String icon;
+    private String note;
+
     private String categoryName;
     private Long categoryId;
-    private LocalDateTime addedDate;
     private BigDecimal amount;
+    // @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime addedDate;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

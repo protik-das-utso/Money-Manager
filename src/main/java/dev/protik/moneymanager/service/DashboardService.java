@@ -35,9 +35,10 @@ public class DashboardService {
         List<RecentTransactionDTO> recentTransactions = concat(latestIncomes.stream().map(income ->
                         RecentTransactionDTO.builder()
                                 .id(income.getId())
+                                .note(income.getNote())
                                 .profileId(profile.getId())
                                 .icon(income.getIcon())
-                                .name(income.getName())
+                                .categoryName(income.getCategoryName())
                                 .amount(income.getAmount())
                                 .addedDate(income.getAddedDate())
                                 .type("income")
@@ -45,9 +46,10 @@ public class DashboardService {
                 latestExpenses.stream().map(expense ->
                         RecentTransactionDTO.builder()
                                 .id(expense.getId())
+                                .note(expense.getNote())
                                 .profileId(profile.getId())
                                 .icon(expense.getIcon())
-                                .name(expense.getName())
+                                .categoryName(expense.getCategoryName())
                                 .amount(expense.getAmount())
                                 .addedDate(expense.getAddedDate())
                                 .type("expense")

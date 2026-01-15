@@ -22,7 +22,7 @@ public interface IncomeRepository extends JpaRepository<IncomeEntity, Long> {
     BigDecimal findTotalExpenseByProfileId(@Param("profileId") Long profileId);
 
     // Select * from tbl_incomes where profile_id = ?1 AND date BETWEEN ?2 AND ?3 AND name LIKE %?4%
-    List<IncomeEntity> findByProfileIdAndAddedDateBetweenAndNameContainingIgnoreCase(
+    List<IncomeEntity> findByProfileIdAndAddedDateBetweenAndNoteContainingIgnoreCase(
             Long profileId,
             LocalDateTime startDate,
             LocalDateTime endDate,

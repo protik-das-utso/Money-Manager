@@ -19,8 +19,8 @@ public class CategoryService {
     // save category
     public CategoryDTO saveCategory(CategoryDTO categoryDTO) {
         ProfileEntity profile = profileService.getCurrentProfile();
-        if(categoryRepository.existsByNameAndProfileId(categoryDTO.getName(), profile.getId())) {
-            throw new RuntimeException("Category with name " + categoryDTO.getName() + " already exists for this profile.");
+        if(categoryRepository.existsByCategoryNameAndProfileId(categoryDTO.getCategoryName(), profile.getId())) {
+            throw new RuntimeException("Category with name " + categoryDTO.getCategoryName() + " already exists for this profile.");
         }
         CategoryEntity newCategory = toEntity(categoryDTO, profile);
         newCategory = categoryRepository.save(newCategory);
@@ -47,7 +47,7 @@ public class CategoryService {
         CategoryEntity existingCategory = categoryRepository.findByIdAndProfileId(categoryId, profile.getId())
                 .orElseThrow(() -> new RuntimeException("Category not found or accessible"));
 
-        existingCategory.setName(categoryDTO.getName());
+        existingCategory.setCategoryName(categoryDTO.getCategoryName());
         existingCategory.setIcon(categoryDTO.getIcon());
         existingCategory.setType(categoryDTO.getType());
 
@@ -58,7 +58,7 @@ public class CategoryService {
     // helper method
     private CategoryEntity toEntity(CategoryDTO categoryDTO, ProfileEntity profile) {
         return CategoryEntity.builder()
-                .name(categoryDTO.getName())
+                .categoryName(categoryDTO.getCategoryName())
                 .icon(categoryDTO.getIcon())
                 .type(categoryDTO.getType())
                 .profile(profile)
@@ -68,7 +68,7 @@ public class CategoryService {
        return CategoryDTO.builder()
                .id(entity.getId())
                .profileId(entity.getProfile().getId() != null ? entity.getProfile().getId() : null)
-               .name(entity.getName())
+               .categoryName(entity.getCategoryName())
                .icon(entity.getIcon())
                .type(entity.getType())
                .createdAt(entity.getCreatedAt())

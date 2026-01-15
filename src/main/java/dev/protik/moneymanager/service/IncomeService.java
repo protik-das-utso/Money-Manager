@@ -74,14 +74,14 @@ public class IncomeService {
     // filter incomes
     public List<IncomeDTO> filterIncomes(LocalDateTime startDate, LocalDateTime endDate, String keyword, Sort sort) {
         ProfileEntity profile = profileService.getCurrentProfile();
-        List<IncomeEntity> list = incomeRepository.findByProfileIdAndAddedDateBetweenAndNameContainingIgnoreCase(profile.getId(), startDate, endDate, keyword, sort);
+        List<IncomeEntity> list = incomeRepository.findByProfileIdAndAddedDateBetweenAndNoteContainingIgnoreCase(profile.getId(), startDate, endDate, keyword, sort);
         return list.stream().map(this::toDTO).toList();
     }
 
     // helper method
     private IncomeEntity toEntiry(IncomeDTO dto, ProfileEntity profile, CategoryEntity category) {
         return IncomeEntity.builder()
-                .name(dto.getName())
+                .note(dto.getNote())
                 .icon(dto.getIcon())
                 .addedDate(dto.getAddedDate())
                 .amount(dto.getAmount())
@@ -92,12 +92,12 @@ public class IncomeService {
     private IncomeDTO toDTO(IncomeEntity entity) {
         return IncomeDTO.builder()
                 .id(entity.getId())
-                .name(entity.getName())
+                .note(entity.getNote())
                 .icon(entity.getIcon())
                 .addedDate(entity.getAddedDate())
                 .amount(entity.getAmount())
                 .categoryId(entity.getCategory().getId() != null ? entity.getCategory().getId() : null)
-                .categoryName(entity.getCategory().getName() != null ? entity.getCategory().getName() : null)
+                .categoryName(entity.getCategory().getCategoryName() != null ? entity.getCategory().getCategoryName() : null)
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
                 .build();

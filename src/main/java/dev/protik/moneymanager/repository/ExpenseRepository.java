@@ -23,7 +23,7 @@ public interface ExpenseRepository extends JpaRepository<ExpenseEntity, Long> {
     BigDecimal findTotalExpenseByProfileId(@Param("profileId") Long profileId);
 
     // Select * from tbl_expenses where profile_id = ?1 AND date BETWEEN ?2 AND ?3 AND name LIKE %?4% order by ?5
-    List<ExpenseEntity> findByProfileIdAndAddedDateBetweenAndNameContainingIgnoreCase(
+    List<ExpenseEntity> findByProfileIdAndAddedDateBetweenAndNoteContainingIgnoreCase(
             Long profileId,
             LocalDateTime startDate,
             LocalDateTime endDate,
